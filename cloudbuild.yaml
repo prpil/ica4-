@@ -1,5 +1,5 @@
 options:
-  logging: CLOUD_LOGGING_ONLY  # This will send the logs to Google Cloud Logging instead of a separate bucket.
+  logging: CLOUD_LOGGING_ONLY # This will send the logs to Google Cloud Logging instead of a separate bucket.
 
 steps:
   # Step 1: Get credentials for the GKE cluster
