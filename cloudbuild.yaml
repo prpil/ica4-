@@ -1,31 +1,32 @@
 steps:
   # Step 1: Build the Docker image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/planar-airship-434723-g8/flask-app:$SHORT_SHA', '.']
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/flask-app:$SHORT_SHA', '.']
 
   # Step 2: Push the Docker image to Google Container Registry (GCR)
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/planar-airship-434723-g8/flask-app:$SHORT_SHA']
+    args: ['push', 'gcr.io/$PROJECT_ID/flask-app:$SHORT_SHA']
 
-  # Step 3: Update the Kubernetes deployment to use the new image
+  # Step 3: Apply the Kubernetes deployment (create or update)
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args:
+      - 'apply'
+      - '-f'
+      - 'k8s/deployment.yaml'  # Path to your Kubernetes YAML file
+      - '--namespace=default'  # Update with the correct namespace if needed
+
+  # Step 4: Update the Kubernetes deployment with the new image
   - name: 'gcr.io/cloud-builders/kubectl'
     args:
       - 'set'
       - 'image'
       - 'deployment/flask-app'
-      - 'flask-app=gcr.io/planar-airship-434723-g8/flask-app:$SHORT_SHA'
+      - 'flask-app=gcr.io/$PROJECT_ID/flask-app:$SHORT_SHA'
       - '--namespace=default'
-    env:
-      - 'CLOUDSDK_COMPUTE_ZONE=${_ZONE}'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLUSTER_NAME}'
 
 images:
-  - 'gcr.io/planar-airship-434723-g8/flask-app:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/flask-app:$SHORT_SHA'
 
 substitutions:
   _ZONE: 'us-central1-a'
   _CLUSTER_NAME: 'my-cluster'
-
-# Correct logging option
-options:
-  logging: CLOUD_LOGGING_ONLY  # Enable logging to Cloud Logging
