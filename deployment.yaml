@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-app
+  labels:
+    app: flask-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-app
+  template:
+    metadata:
+      labels:
+        app: flask-app
+    spec:
+      containers:
+      - name: flask-app
+        image: gcr.io/planar-airship-434723-g8/flask-app:latest
+        ports:
+        - containerPort: 6001
+        env:
+        - name: API_TOKEN
+          value: "MySecureToken" # Or use a Kubernetes Secret for sensitive data
+        - name: API_URL
+          value: "https://fakeweatherservice.com/getforecast"
