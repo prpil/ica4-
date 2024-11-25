@@ -25,4 +25,3 @@ images:
 substitutions:
   _ZONE: 'us-central1-a'          # Specify your zone
   _CLUSTER_NAME: 'my-cluster'    # Specify your GKE cluster name
-;q!
