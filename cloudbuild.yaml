@@ -1,27 +1,47 @@
 steps:
   # Step 1: Build the Docker image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/flask-app:$SHORT_SHA', '.']
+    args: 
+      - 'build'
+      - '-t'
+      - 'gcr.io/planar-airship-434723-g8/myapp:$SHORT_SHA'
+      - '.'
 
-  # Step 2: Push the Docker image to GCR
+  # Step 2: Push the Docker image to Google Container Registry (GCR)
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/flask-app:$SHORT_SHA']
+    args: 
+      - 'push'
+      - 'gcr.io/planar-airship-434723-g8/myapp:$SHORT_SHA'
 
-  # Step 3: Deploy to GKE
+  # Step 3: Configure kubectl to use the correct cluster and zone
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args: ['get', 'nodes']
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=${_ZONE}'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLUSTER_NAME}'
+
+  # Step 4: Update the Kubernetes deployment to use the new image
   - name: 'gcr.io/cloud-builders/kubectl'
     args:
       - 'set'
       - 'image'
-      - 'deployment/flask-app'
-      - 'flask-app=gcr.io/$PROJECT_ID/flask-app:$SHORT_SHA'
+      - 'deployment/python-app'   
+      - 'backend=gcr.io/planar-airship-434723-g8/myapp:$SHORT_SHA'  
+      - 'frontend=gcr.io/planar-airship-434723-g8/myapp:$SHORT_SHA' 
       - '--namespace=default'
     env:
       - 'CLOUDSDK_COMPUTE_ZONE=${_ZONE}'
       - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLUSTER_NAME}'
 
 images:
-  - 'gcr.io/$PROJECT_ID/flask-app:$SHORT_SHA'
+  - 'gcr.io/planar-airship-434723-g8/myapp:$SHORT_SHA'
+
+options:
+  logging: CLOUD_LOGGING_ONLY    # Logs only to Cloud Logging for compliance
+  substitutionOption: ALLOW_LOOSE
 
 substitutions:
-  _ZONE: 'us-central1-a'          # Specify your zone
-  _CLUSTER_NAME: 'my-cluster'    # Specify your GKE cluster name
+  _ZONE: 'us-central1-a'          # Replace with your GCP zone
+  _CLUSTER_NAME: 'my-cluster'     # Replace with your GKE cluster name
+
+timeout: '600s'                   # Optional timeout for the build process
