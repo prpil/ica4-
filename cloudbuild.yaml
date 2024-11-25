@@ -1,5 +1,5 @@
 options:
-  logsBucket: gs://your-log-bucket-name  # Specify your logs bucket
+  logging: CLOUD_LOGGING_ONLY  # This will send the logs to Google Cloud Logging instead of a separate bucket.
 
 steps:
   # Step 1: Build the Docker image
