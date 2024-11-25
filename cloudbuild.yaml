@@ -1,13 +1,13 @@
 steps:
-  # Build Docker image
+  # Step 1: Build the Docker image
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'gcr.io/planar-airship-434723-g8/flask-app:$SHORT_SHA', '.']
 
-  # Push Docker image to GCR
+  # Step 2: Push the Docker image to Google Container Registry (GCR)
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/planar-airship-434723-g8/flask-app:$SHORT_SHA']
 
-  # Deploy to GKE
+  # Step 3: Update the Kubernetes deployment to use the new image
   - name: 'gcr.io/cloud-builders/kubectl'
     args:
       - 'set'
@@ -26,6 +26,6 @@ substitutions:
   _ZONE: 'us-central1-a'
   _CLUSTER_NAME: 'my-cluster'
 
-# Specify the logs bucket for Cloud Build
+# Disable logging option
 options:
-  logsBucket: 'gs://my-cloud-build-logs'
+  logging: NONE  # Disable logging
