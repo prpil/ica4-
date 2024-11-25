@@ -26,6 +26,6 @@ substitutions:
   _ZONE: 'us-central1-a'
   _CLUSTER_NAME: 'my-cluster'
 
-# Disable logging option
+# Correct logging option
 options:
-  logging: NONE  # Disable logging
+  logging: CLOUD_LOGGING_ONLY  # Enable logging to Cloud Logging
