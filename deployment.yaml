@@ -18,7 +18,7 @@ spec:
       - name: flask-app
         image: gcr.io/planar-airship-434723-g8/flask-app:latest
         ports:
-        - containerPort: 6001
+        - containerPort: 80
         env:
         - name: API_TOKEN
           value: "MySecureToken" # Or use a Kubernetes Secret for sensitive data
