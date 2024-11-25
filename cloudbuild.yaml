@@ -41,7 +41,7 @@ options:
   substitutionOption: ALLOW_LOOSE
 
 substitutions:
-  _ZONE: 'us-central1-a'          # Replace with your GCP zone
+  _ZONE: 'global'          # Replace with your GCP zone
   _CLUSTER_NAME: 'my-cluster'     # Replace with your GKE cluster name
 
 timeout: '600s'                   # Optional timeout for the build process
