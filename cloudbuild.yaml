@@ -1,13 +1,13 @@
 steps:
-  # Step 1: Build the Docker image
+  # Build Docker image
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'gcr.io/planar-airship-434723-g8/flask-app:$SHORT_SHA', '.']
-    
-  # Step 2: Push the Docker image to Google Container Registry (GCR)
+
+  # Push Docker image to GCR
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/planar-airship-434723-g8/flask-app:$SHORT_SHA']
 
-  # Step 3: Deploy to Google Kubernetes Engine (GKE)
+  # Deploy to GKE
   - name: 'gcr.io/cloud-builders/kubectl'
     args:
       - 'set'
@@ -23,5 +23,9 @@ images:
   - 'gcr.io/planar-airship-434723-g8/flask-app:$SHORT_SHA'
 
 substitutions:
-  _ZONE: 'us-central1-a'             # Specify your zone
-  _CLUSTER_NAME: 'my-cluster'         # Specify your GKE cluster name
+  _ZONE: 'us-central1-a'
+  _CLUSTER_NAME: 'my-cluster'
+
+# Specify the logs bucket for Cloud Build
+options:
+  logsBucket: 'gs://my-cloud-build-logs'
